@@ -1,8 +1,14 @@
+import logging
+
 from google.protobuf.json_format import MessageToDict
 from pyconfr_2019.grpc_nlp.protos.Timeline_pb2 import Timeline
-from pyconfr_2019.grpc_nlp.protos.TweetFeaturesService_pb2 import (ComputeGeneralSentimentOfUserRequest, DetectLanguageFromTweetTextRequest, TopUsersRequest)
+from pyconfr_2019.grpc_nlp.protos.TweetFeaturesService_pb2 import (
+    ComputeGeneralSentimentOfUserRequest,
+    DetectLanguageFromTweetTextRequest,
+    TopUsersRequest
+)
 
-from features_processing.client_rpc import logger
+logger = logging.getLogger(__name__)
 
 
 def top_user_command(features_rpc_stub, timeline_start, timeline_end):
@@ -12,8 +18,7 @@ def top_user_command(features_rpc_stub, timeline_start, timeline_end):
                               end=int(timeline_end.timestamp() * 1000)))
     )
     for i, top_user in enumerate(top_user_response, start=1):
-        logger.info(
-            f"#{i} - user_id={top_user.user_id}, nb_tweets={top_user.nb_tweets}")
+        logger.info(f"#{i} - user_id={top_user.user_id}, nb_tweets={top_user.nb_tweets}")
 
 
 def general_sentiment_command(features_rpc_stub, user_id):
@@ -32,5 +37,4 @@ def detect_language_command(features_rpc_stub, tweet_id):
 
     detect_language = detect_language_response
 
-    logger.debug(
-        f"Detect language on tweet (id={tweet_id}): {MessageToDict(detect_language)}")
+    logger.debug(f"Detect language on tweet (id={tweet_id}): {MessageToDict(detect_language)}")
